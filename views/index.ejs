@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Result Dashboard</title>
+  <style>
+    .print-btn {
+  margin-top: 14px;
+  padding: 10px 24px;
+  background: white;
+  color: #1a237e;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media print {
+  .filter-bar, .print-btn { display: none; }
+}
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; color: #333; }
+    .header { background: linear-gradient(135deg, #1a237e, #283593); color: white; padding: 28px 40px; text-align: center; }
+    .header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 6px; }
+    .header p { font-size: 1rem; opacity: 0.85; }
+    .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+    .section-title { font-size: 1.2rem; font-weight: 700; color: #1a237e; margin: 30px 0 14px; padding-left: 12px; border-left: 4px solid #1a237e; display: flex; align-items: center; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+    .card { background: white; border-radius: 12px; padding: 22px 18px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-top: 4px solid #ccc; transition: transform 0.2s; }
+    .card:hover { transform: translateY(-4px); }
+    .card-icon { font-size: 2rem; margin-bottom: 8px; }
+    .card-num { font-size: 2rem; font-weight: 700; margin-bottom: 6px; }
+    .card-label { font-size: 0.85rem; color: #666; }
+    .card.total { border-top-color: #1a237e; }
+    .card.total .card-num { color: #1a237e; }
+    .card.passed { border-top-color: #2e7d32; }
+    .card.passed .card-num { color: #2e7d32; }
+    .card.failed { border-top-color: #c62828; }
+    .card.failed .card-num { color: #c62828; }
+    .card.avg { border-top-color: #f57f17; }
+    .card.avg .card-num { color: #f57f17; }
+    .card.dist { border-top-color: #6a1b9a; }
+    .card.dist .card-num { color: #6a1b9a; }
+    .card.first { border-top-color: #1565c0; }
+    .card.first .card-num { color: #1565c0; }
+    .card.second { border-top-color: #00838f; }
+    .card.second .card-num { color: #00838f; }
+    .card.third { border-top-color: #e65100; }
+    .card.third .card-num { color: #e65100; }
+    .caste-table-wrap { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; }
+    .caste-table { width: 100%; border-collapse: collapse; }
+    .caste-table th { background: #1a237e; color: white; padding: 14px 18px; text-align: left; font-size: 0.9rem; }
+    .caste-table td { padding: 12px 18px; border-bottom: 1px solid #f0f0f0; font-size: 0.9rem; }
+    .caste-table tr:last-child td { border-bottom: none; }
+    .caste-table tr:hover td { background: #f5f5f5; }
+    .progress-wrap { background: #e0e0e0; border-radius: 20px; height: 22px; overflow: hidden; min-width: 120px; }
+    .progress-bar { background: linear-gradient(90deg, #2e7d32, #66bb6a); height: 100%; border-radius: 20px; color: white; font-size: 0.75rem; font-weight: 600; display: flex; align-items: center; justify-content: center; min-width: 36px; }
+    .top5-wrap { display: flex; flex-direction: column; gap: 12px; }
+    .top5-card { background: white; border-radius: 12px; padding: 16px 20px; display: flex; align-items: center; gap: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+    .top5-rank { font-size: 1.5rem; font-weight: 700; color: #1a237e; min-width: 40px; }
+    .top5-info { flex: 1; }
+    .top5-name { font-size: 1rem; font-weight: 600; margin-bottom: 6px; }
+    .top5-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+    .top5-pct { font-size: 1.4rem; font-weight: 700; color: #2e7d32; }
+    .filter-bar { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; background: white; padding: 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .filter-bar input { flex: 1; min-width: 200px; padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9rem; outline: none; }
+    .filter-bar input:focus { border-color: #1a237e; }
+    .filter-bar select { padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9rem; outline: none; background: white; cursor: pointer; }
+    .filter-bar select:focus { border-color: #1a237e; }
+    .filter-bar button { padding: 10px 20px; background: #1a237e; color: white; border: none; border-radius: 8px; font-size: 0.9rem; cursor: pointer; font-weight: 600; }
+    .filter-bar button:hover { background: #283593; }
+    .table-wrap { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow-x: auto; }
+    .student-table { width: 100%; border-collapse: collapse; min-width: 700px; }
+    .student-table th { background: #1a237e; color: white; padding: 14px 16px; text-align: left; font-size: 0.9rem; }
+    .student-table td { padding: 12px 16px; border-bottom: 1px solid #f0f0f0; font-size: 0.9rem; }
+    .student-table tr:last-child td { border-bottom: none; }
+    .student-table tr:hover td { background: #f5f7ff; }
+    .name-col { font-weight: 500; }
+    .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+    .pass-badge { background: #e8f5e9; color: #2e7d32; }
+    .fail-badge-tag { background: #ffebee; color: #c62828; }
+    .dist-badge { background: #f3e5f5; color: #6a1b9a; }
+    .first-badge { background: #e3f2fd; color: #1565c0; }
+    .second-badge { background: #e0f7fa; color: #00838f; }
+    .third-badge { background: #fff3e0; color: #e65100; }
+    .caste-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: #e8eaf6; color: #1a237e; }
+    .pass-text { color: #2e7d32; font-weight: 600; }
+    .fail-text { color: #c62828; font-weight: 600; }
+    .footer { text-align: center; padding: 20px; color: #999; font-size: 0.85rem; margin-top: 40px; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <h1>🎓 Student Result Dashboard</h1>
+    <p>BSc SY — Academic Result Analysis</p>
+    <button onclick="window.print()" class="print-btn">🖨️ Print Report</button>
+  </div>
+
+  <div class="container">
+
+    <!-- Overview Cards -->
+    <div class="section-title">Overview</div>
+    <div class="cards">
+      <div class="card total">
+        <div class="card-icon">👨‍🎓</div>
+        <div class="card-num"><%= totalStudents %></div>
+        <div class="card-label">Total Students</div>
+      </div>
+      <div class="card passed">
+        <div class="card-icon">✅</div>
+        <div class="card-num"><%= totalPassed %></div>
+        <div class="card-label">Passed</div>
+      </div>
+      <div class="card failed">
+        <div class="card-icon">❌</div>
+        <div class="card-num"><%= totalFailed %></div>
+        <div class="card-label">Failed</div>
+      </div>
+      <div class="card avg">
+        <div class="card-icon">📊</div>
+        <div class="card-num">
+          <%= (students.reduce((a, s) => a + s.percentage, 0) / totalStudents).toFixed(1) %>%
+        </div>
+        <div class="card-label">Class Average</div>
+      </div>
+    </div>
+
+    <!-- Category Wise -->
+    <div class="section-title">Category Wise Result</div>
+    <div class="cards">
+      <div class="card dist">
+        <div class="card-num"><%= distinction %></div>
+        <div class="card-label">🏆 Distinction (≥75%)</div>
+      </div>
+      <div class="card first">
+        <div class="card-num"><%= firstClass %></div>
+        <div class="card-label">🥇 First Class (≥60%)</div>
+      </div>
+      <div class="card second">
+        <div class="card-num"><%= secondClass %></div>
+        <div class="card-label">🥈 Second Class (≥50%)</div>
+      </div>
+      <div class="card third">
+        <div class="card-num"><%= thirdClass %></div>
+        <div class="card-label">🥉 Third Class (≥40%)</div>
+      </div>
+      <div class="card failed">
+        <div class="card-num"><%= failClass %></div>
+        <div class="card-label">❌ Fail (Below 40%)</div>
+      </div>
+    </div>
+
+    <!-- Caste Wise -->
+    <div class="section-title">Caste Wise Analysis</div>
+    <div class="caste-table-wrap">
+      <table class="caste-table">
+        <thead>
+          <tr>
+            <th>Caste</th>
+            <th>Total Students</th>
+            <th>Passed</th>
+            <th>Failed</th>
+            <th>Pass %</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% casteAnalysis.forEach(function(c){ %>
+          <tr>
+            <td><span class="caste-badge"><%= c.caste %></span></td>
+            <td><%= c.total %></td>
+            <td class="pass-text"><%= c.passed %></td>
+            <td class="fail-text"><%= c.failed %></td>
+            <td>
+              <div class="progress-wrap">
+                <div class="progress-bar" style="width:<%= ((c.passed/c.total)*100).toFixed(0) %>%">
+                  <%= ((c.passed/c.total)*100).toFixed(0) %>%
+                </div>
+              </div>
+            </td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Top 5 -->
+    <div class="section-title">🏆 Top 5 Students</div>
+    <div class="top5-wrap">
+      <% top5.forEach(function(s, i){ %>
+      <div class="top5-card">
+        <div class="top5-rank">#<%= i+1 %></div>
+        <div class="top5-info">
+          <div class="top5-name"><%= s.name %></div>
+          <div class="top5-meta">
+            <span class="caste-badge"><%= s.caste %></span>
+            <span class="badge dist-badge"><%= s.resultClass %></span>
+          </div>
+        </div>
+        <div class="top5-pct"><%= s.percentage %>%</div>
+      </div>
+      <% }); %>
+    </div>
+
+    <!-- Search & Filter -->
+    <div class="section-title">
+      All Students Result
+      <span id="visibleCount" style="font-size:0.9rem; font-weight:400; color:#666; margin-left:10px;">
+        <%= totalStudents %>
+      </span>
+      <span style="font-size:0.9rem; font-weight:400; color:#666;"> students</span>
+    </div>
+
+    <div class="filter-bar">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="🔍 Search by name..."
+        onkeyup="filterTable()"
+      />
+      <select id="casteFilter" onchange="filterTable()">
+        <option value="">All Castes</option>
+        <% casteAnalysis.forEach(function(c){ %>
+          <option value="<%= c.caste %>"><%= c.caste %></option>
+        <% }); %>
+      </select>
+      <select id="resultFilter" onchange="filterTable()">
+        <option value="">All Results</option>
+        <option value="PASS">PASS</option>
+        <option value="FAIL">FAIL</option>
+      </select>
+      <select id="classFilter" onchange="filterTable()">
+        <option value="">All Classes</option>
+        <option value="First Class with Distinction">Distinction</option>
+        <option value="First Class">First Class</option>
+        <option value="Second Class">Second Class</option>
+        <option value="Third Class">Third Class</option>
+        <option value="Fail">Fail</option>
+      </select>
+      <button onclick="resetFilters()">🔄 Reset</button>
+    </div>
+
+    <!-- Students Table -->
+    <div class="table-wrap">
+      <table class="student-table">
+        <thead>
+          <tr>
+            <th>Sr No</th>
+            <th>Name</th>
+            <th>Caste</th>
+            <th>Total</th>
+            <th>Percentage</th>
+            <th>Result</th>
+            <th>Class</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% students.forEach(function(s){ %>
+          <tr>
+            <td><%= s.srNo %></td>
+            <td class="name-col"><%= s.name %></td>
+            <td><span class="caste-badge"><%= s.caste %></span></td>
+            <td><%= s.total %></td>
+            <td><strong><%= s.percentage %>%</strong></td>
+            <td>
+              <% if(s.passFail === 'PASS'){ %>
+                <span class="badge pass-badge">PASS</span>
+              <% } else { %>
+                <span class="badge fail-badge-tag">FAIL</span>
+              <% } %>
+            </td>
+            <td>
+              <% if(s.resultClass === 'First Class with Distinction'){ %>
+                <span class="badge dist-badge">Distinction</span>
+              <% } else if(s.resultClass === 'First Class'){ %>
+                <span class="badge first-badge">1st Class</span>
+              <% } else if(s.resultClass === 'Second Class'){ %>
+                <span class="badge second-badge">2nd Class</span>
+              <% } else if(s.resultClass === 'Third Class'){ %>
+                <span class="badge third-badge">3rd Class</span>
+              <% } else { %>
+                <span class="badge fail-badge-tag">Fail</span>
+              <% } %>
+            </td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>BSc SY Student Result Dashboard &copy; 2025</p>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    function filterTable() {
+      const searchVal = document.getElementById('searchInput').value.toLowerCase();
+      const casteVal  = document.getElementById('casteFilter').value.toLowerCase();
+      const resultVal = document.getElementById('resultFilter').value.toLowerCase();
+      const classVal  = document.getElementById('classFilter').value.toLowerCase();
+
+      const rows = document.querySelectorAll('.student-table tbody tr');
+      let visibleCount = 0;
+
+      rows.forEach(function(row) {
+        const name   = row.cells[1].textContent.toLowerCase();
+        const caste  = row.cells[2].textContent.toLowerCase();
+        const result = row.cells[5].textContent.toLowerCase();
+        const cls    = row.cells[6].textContent.toLowerCase();
+
+        const matchName   = name.includes(searchVal);
+        const matchCaste  = casteVal  === '' || caste.includes(casteVal);
+        const matchResult = resultVal === '' || result.includes(resultVal);
+        const matchClass  = classVal  === '' || cls.includes(classVal);
+
+        if (matchName && matchCaste && matchResult && matchClass) {
+          row.style.display = '';
+          visibleCount++;
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      document.getElementById('visibleCount').textContent = visibleCount;
+    }
+
+    function resetFilters() {
+      document.getElementById('searchInput').value  = '';
+      document.getElementById('casteFilter').value  = '';
+      document.getElementById('resultFilter').value = '';
+      document.getElementById('classFilter').value  = '';
+      filterTable();
+    }
+  </script>
+
+</body>
+</html>

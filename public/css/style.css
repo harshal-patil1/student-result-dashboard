@@ -1,0 +1,289 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f0f2f5;
+  color: #333;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, #1a237e, #283593);
+  color: white;
+  padding: 28px 40px;
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.header p {
+  font-size: 1rem;
+  opacity: 0.85;
+}
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+
+/* Section Title */
+.section-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1a237e;
+  margin: 30px 0 14px;
+  padding-left: 12px;
+  border-left: 4px solid #1a237e;
+}
+
+/* Summary Cards */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 22px 18px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border-top: 4px solid #ccc;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+}
+
+.card-icon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.card-num {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.card-label {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.card.total  { border-top-color: #1a237e; }
+.card.total .card-num { color: #1a237e; }
+
+.card.passed { border-top-color: #2e7d32; }
+.card.passed .card-num { color: #2e7d32; }
+
+.card.failed { border-top-color: #c62828; }
+.card.failed .card-num { color: #c62828; }
+
+.card.avg    { border-top-color: #f57f17; }
+.card.avg .card-num { color: #f57f17; }
+
+.card.dist   { border-top-color: #6a1b9a; }
+.card.dist .card-num { color: #6a1b9a; }
+
+.card.first  { border-top-color: #1565c0; }
+.card.first .card-num { color: #1565c0; }
+
+.card.second { border-top-color: #00838f; }
+.card.second .card-num { color: #00838f; }
+
+.card.third  { border-top-color: #e65100; }
+.card.third .card-num { color: #e65100; }
+
+/* Caste Table */
+.caste-table-wrap {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+
+.caste-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.caste-table th {
+  background: #1a237e;
+  color: white;
+  padding: 14px 18px;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.caste-table td {
+  padding: 12px 18px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.9rem;
+}
+
+.caste-table tr:last-child td {
+  border-bottom: none;
+}
+
+.caste-table tr:hover td {
+  background: #f5f5f5;
+}
+
+/* Progress Bar */
+.progress-wrap {
+  background: #e0e0e0;
+  border-radius: 20px;
+  height: 22px;
+  overflow: hidden;
+  min-width: 120px;
+}
+
+.progress-bar {
+  background: linear-gradient(90deg, #2e7d32, #66bb6a);
+  height: 100%;
+  border-radius: 20px;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+}
+
+/* Top 5 */
+.top5-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.top5-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+
+.top5-rank {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a237e;
+  min-width: 40px;
+}
+
+.top5-info {
+  flex: 1;
+}
+
+.top5-name {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.top5-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.top5-pct {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2e7d32;
+}
+
+/* All Students Table */
+.table-wrap {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  overflow-x: auto;
+}
+
+.student-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px;
+}
+
+.student-table th {
+  background: #1a237e;
+  color: white;
+  padding: 14px 16px;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.student-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.9rem;
+}
+
+.student-table tr:last-child td {
+  border-bottom: none;
+}
+
+.student-table tr:hover td {
+  background: #f5f7ff;
+}
+
+.name-col {
+  font-weight: 500;
+}
+
+/* Badges */
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.pass-badge     { background: #e8f5e9; color: #2e7d32; }
+.fail-badge-tag { background: #ffebee; color: #c62828; }
+.dist-badge     { background: #f3e5f5; color: #6a1b9a; }
+.first-badge    { background: #e3f2fd; color: #1565c0; }
+.second-badge   { background: #e0f7fa; color: #00838f; }
+.third-badge    { background: #fff3e0; color: #e65100; }
+
+.caste-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: #e8eaf6;
+  color: #1a237e;
+}
+
+.pass-text { color: #2e7d32; font-weight: 600; }
+.fail-text { color: #c62828; font-weight: 600; }
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 20px;
+  color: #999;
+  font-size: 0.85rem;
+  margin-top: 40px;
+}
